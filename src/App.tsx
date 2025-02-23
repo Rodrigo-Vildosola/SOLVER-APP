@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 
 import { SolverProvider } from "@/context/SolverProvider";
 // import { useSolverModule } from "@/hooks/useSolverModule";
 
 import Layout from "@/components/layout/Layout";
-import CalculatorPanel from "@/components/panels/CalculatorPanel";
-import VariablesPanel from "@/components/panels/VariablesPanel";
-import FunctionsPanel from "@/components/panels/FunctionsPanel";
-import ConstantsPanel from "@/components/panels/ConstantsPanel";
+// import CalculatorPanel from "@/components/panels/CalculatorPanel";
+// import VariablesPanel from "@/components/panels/VariablesPanel";
+// import FunctionsPanel from "@/components/panels/FunctionsPanel";
+// import ConstantsPanel from "@/components/panels/ConstantsPanel";
 import SolverDashboard from "./components/SolverDashboard";
 
 const SolverApp: React.FC = () => {
   // const solver = useSolverModule();
-  const [activeTab, setActiveTab] = useState<"calc" | "vars" | "funcs" | "consts">("calc");
+  // const [activeTab, setActiveTab] = useState<"calc" | "vars" | "funcs" | "consts">("calc");
 
   // const handleEvaluate = () => {
   //   if (!solver) return;
@@ -28,7 +28,7 @@ const SolverApp: React.FC = () => {
   return (
     <Layout>
       {/* Simplified manual tab switcher */}
-      <div className="mb-4 space-x-2">
+      {/* <div className="mb-4 space-x-2">
         <button onClick={() => setActiveTab("calc")} className="px-2 py-1 bg-gray-200 rounded">
           Calculator
         </button>
@@ -41,12 +41,12 @@ const SolverApp: React.FC = () => {
         <button onClick={() => setActiveTab("consts")} className="px-2 py-1 bg-gray-200 rounded">
           Constants
         </button>
-      </div>
+      </div> */}
 
-      {activeTab === "calc" && <CalculatorPanel />}
+      {/* {activeTab === "calc" && <CalculatorPanel />}
       {activeTab === "vars" && <VariablesPanel />}
       {activeTab === "funcs" && <FunctionsPanel />}
-      {activeTab === "consts" && <ConstantsPanel />}
+      {activeTab === "consts" && <ConstantsPanel />} */}
       <SolverDashboard />
     </Layout>
   );

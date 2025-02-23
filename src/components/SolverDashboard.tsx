@@ -1,31 +1,46 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { useSolverModule } from "@/hooks/useSolverModule";
-import { FaSave } from "react-icons/fa";
+import { AnimatePresence } from "framer-motion";
+
+
 import SolverPanel from "./SolverPanel";
 import SolverInputRow from "./SolverInputRow";
 import SolverEvaluator from "./SolverEvaluator";
+import SaveButton from "./ui/SaveButton";
+import { AnimatedErrorMessage } from "./ui/AnimatedErrorMessage";
 
 const SolverDashboard: React.FC = () => {
   const { solver, getException } = useSolverModule();
 
-  const [variables, setVariables] = useState<{ name: string; value: number }[]>([]);
-  const [constants, setConstants] = useState<{ name: string; value: number }[]>([]);
+  const [variables, setVariables] = useState<{ name: string; value?: string }[]>([]);
+  const [constants, setConstants] = useState<{ name: string; value?: string }[]>([]);
   const [functions, setFunctions] = useState<{ name: string; args: string[]; expression: string }[]>([]);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if (solver) {
-      setVariables(Object.entries(solver.listVariables()).map(([name, value]) => ({ name, value })));
-      setConstants(Object.entries(solver.listConstants()).map(([name, value]) => ({ name, value })));
+      setVariables(
+        Object.entries(solver.listVariables()).map(([name, value]) => ({
+          name,
+          value: value !== undefined ? value.toString() : "", // Convert number to string
+        }))
+      );
+
+      setConstants(
+        Object.entries(solver.listConstants()).map(([name, value]) => ({
+          name,
+          value: value !== undefined ? value.toString() : "", // Convert number to string
+        }))
+      );
     }
   }, [solver]);
 
   const handleSave = () => {
     if (!solver) return;
     try {
-      variables.forEach((v) => solver.declareVariable(v.name, v.value));
-      constants.forEach((c) => solver.declareConstant(c.name, c.value));
+      variables.forEach((v) => v.value !== "" && solver.declareVariable(v.name, Number(v.value)));
+      constants.forEach((c) => c.value !== "" && solver.declareConstant(c.name, Number(c.value)));
       functions.forEach((f) => solver.declareFunction(f.name, f.args, f.expression));
       setError("State saved successfully ✅");
     } catch (err) {
@@ -35,7 +50,9 @@ const SolverDashboard: React.FC = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-      <SolverPanel title="Variables" onAdd={() => setVariables([...variables, { name: "", value: 0 }])}>
+      <SolverEvaluator />
+
+      <SolverPanel title="Variables" onAdd={() => setVariables([...variables, { name: "", value: "" }])}>
         {variables.map((variable, index) => (
           <SolverInputRow
             key={index}
@@ -51,7 +68,8 @@ const SolverDashboard: React.FC = () => {
         ))}
       </SolverPanel>
 
-      <SolverPanel title="Constants" onAdd={() => setConstants([...constants, { name: "", value: 0 }])}>
+
+      <SolverPanel title="Constants" onAdd={() => setConstants([...constants, { name: "", value: undefined }])}>
         {constants.map((constant, index) => (
           <SolverInputRow
             key={index}
@@ -71,6 +89,7 @@ const SolverDashboard: React.FC = () => {
         {functions.map((func, index) => (
           <SolverInputRow
             key={index}
+            value={null}
             name={func.name}
             args={func.args.join(",")}
             expr={func.expression}
@@ -85,14 +104,11 @@ const SolverDashboard: React.FC = () => {
       </SolverPanel>
 
       <div className="col-span-1 md:col-span-2 flex justify-end">
-        <button onClick={handleSave} className="px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center gap-2 shadow-md hover:bg-blue-700">
-          <FaSave /> Save State
-        </button>
+        <SaveButton onClick={handleSave} />
       </div>
-      {error && <div className="text-red-500 col-span-1 md:col-span-2 text-center">{error}</div>}
 
-      <SolverEvaluator />
-
+      {/* Animated Error Message */}
+      <AnimatePresence>{error && <AnimatedErrorMessage message={error} />}</AnimatePresence>
     </div>
   );
 };

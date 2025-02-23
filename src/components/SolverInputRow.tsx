@@ -4,7 +4,7 @@ import { FaTrash } from "react-icons/fa";
 
 interface SolverInputRowProps {
   name: string;
-  value?: number;
+  value?: string | null;
   args?: string;
   expr?: string;
   onChange: (key: string, value: any) => void;
@@ -24,7 +24,7 @@ const SolverInputRow: React.FC<SolverInputRowProps> = ({ name, value, args, expr
       />
 
       {/* Value Input (Only for Variables & Constants) */}
-      {value !== undefined && (
+      {value !== null && (
         <input
           type="text"
           value={value}
