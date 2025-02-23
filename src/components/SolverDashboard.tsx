@@ -4,17 +4,16 @@ import { useSolverModule } from "@/hooks/useSolverModule";
 import { FaSave } from "react-icons/fa";
 import SolverPanel from "./SolverPanel";
 import SolverInputRow from "./SolverInputRow";
+import SolverEvaluator from "./SolverEvaluator";
 
 const SolverDashboard: React.FC = () => {
   const { solver, getException } = useSolverModule();
 
-  // State for variables, constants, functions
   const [variables, setVariables] = useState<{ name: string; value: number }[]>([]);
   const [constants, setConstants] = useState<{ name: string; value: number }[]>([]);
   const [functions, setFunctions] = useState<{ name: string; args: string[]; expression: string }[]>([]);
   const [error, setError] = useState<string>("");
 
-  // Load variables/constants from solver on mount
   useEffect(() => {
     if (solver) {
       setVariables(Object.entries(solver.listVariables()).map(([name, value]) => ({ name, value })));
@@ -22,7 +21,6 @@ const SolverDashboard: React.FC = () => {
     }
   }, [solver]);
 
-  // Save state to solver
   const handleSave = () => {
     if (!solver) return;
     try {
@@ -37,7 +35,6 @@ const SolverDashboard: React.FC = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Variables Panel */}
       <SolverPanel title="Variables" onAdd={() => setVariables([...variables, { name: "", value: 0 }])}>
         {variables.map((variable, index) => (
           <SolverInputRow
@@ -54,7 +51,6 @@ const SolverDashboard: React.FC = () => {
         ))}
       </SolverPanel>
 
-      {/* Constants Panel */}
       <SolverPanel title="Constants" onAdd={() => setConstants([...constants, { name: "", value: 0 }])}>
         {constants.map((constant, index) => (
           <SolverInputRow
@@ -71,7 +67,6 @@ const SolverDashboard: React.FC = () => {
         ))}
       </SolverPanel>
 
-      {/* Functions Panel */}
       <SolverPanel title="Functions" onAdd={() => setFunctions([...functions, { name: "", args: ["x"], expression: "x" }])}>
         {functions.map((func, index) => (
           <SolverInputRow
@@ -89,14 +84,14 @@ const SolverDashboard: React.FC = () => {
         ))}
       </SolverPanel>
 
-      {/* Save Button */}
+      <SolverEvaluator />
+
       <div className="col-span-1 md:col-span-2 flex justify-end">
         <button onClick={handleSave} className="px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center gap-2 shadow-md hover:bg-blue-700">
           <FaSave /> Save State
         </button>
       </div>
 
-      {/* Error Message */}
       {error && <div className="text-red-500 col-span-1 md:col-span-2 text-center">{error}</div>}
     </div>
   );
