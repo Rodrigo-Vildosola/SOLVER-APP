@@ -84,15 +84,15 @@ const SolverDashboard: React.FC = () => {
         ))}
       </SolverPanel>
 
-      <SolverEvaluator />
-
       <div className="col-span-1 md:col-span-2 flex justify-end">
         <button onClick={handleSave} className="px-6 py-3 bg-blue-600 text-white rounded-lg flex items-center gap-2 shadow-md hover:bg-blue-700">
           <FaSave /> Save State
         </button>
       </div>
-
       {error && <div className="text-red-500 col-span-1 md:col-span-2 text-center">{error}</div>}
+
+      <SolverEvaluator />
+
     </div>
   );
 };
